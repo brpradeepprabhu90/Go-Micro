@@ -22,6 +22,23 @@ services:
       mode: replicated
       replicas: 1
 
+  mail-service:
+    build:
+      context: ./../mail-service
+      dockerfile: ./../mail-service/mail-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      FROM_NAME: "Javascript Guy"
+      FROM_ADDRESS: "jslovesgolang@example.com"
+
   authentication-service:
     build:
       context: ./../authentication-service
@@ -34,6 +51,15 @@ services:
       replicas: 1
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disable timezone=UTC connect_timeout=5"
+
+  listener-service:
+    build:
+      context: ./../listener-service
+      dockerfile: ./../listener-service/listener-service.dockerfile
+    deploy:
+      mode: replicated
+      replicas: 1
+
 
 
   postgres:
@@ -67,5 +93,17 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+
+  rabbitmq:
+    image: "rabbitmq:3.9-alpine"
+    ports:
+      - "5672:5672"
+    deploy:
+      mode: replicated
+      replicas: 1
+    volumes:
+      - ./db-data/rabbitmq/:/var/lib/rabbitmq/
+
+
 
       

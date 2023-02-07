@@ -5,6 +5,7 @@ import (
 	"github.com/vanng822/go-premailer/premailer"
 	mail "github.com/xhit/go-simple-mail/v2"
 	"html/template"
+	"log"
 	"time"
 )
 
@@ -62,6 +63,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 	smptClient, err := server.Connect()
 
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 	email := mail.NewMSG()
@@ -75,6 +77,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 	}
 	err = email.Send(smptClient)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 	return nil
@@ -98,6 +101,7 @@ func (m *Mail) buildPlainTextMsg(msg Message) (string, error) {
 	t, err := template.New("email-plain").ParseFiles(templateToRender)
 
 	if err != nil {
+		log.Println(err)
 		return "", err
 	}
 	var tpl bytes.Buffer
@@ -114,6 +118,7 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 	t, err := template.New("email-html").ParseFiles(templateToRender)
 
 	if err != nil {
+		log.Println(err)
 		return "", err
 	}
 	var tpl bytes.Buffer
@@ -137,11 +142,13 @@ func (m *Mail) inlineCSS(s string) (string, error) {
 	}
 	prem, err := premailer.NewPremailerFromString(s, &options)
 	if err != nil {
+		log.Println(err)
 		return "", err
 	}
 	html, err := prem.Transform()
 
 	if err != nil {
+		log.Println(err)
 		return "", err
 	}
 	return html, err

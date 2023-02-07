@@ -1,2 +1,5 @@
-./project/db-data
+**/db-data/**
 **/.idea
+**/listenerApp
+**/brokerApp
+**/db-data/rabbitmq
